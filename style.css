@@ -1,0 +1,2080 @@
+  @import url('https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap');
+  
+  :root {
+    --apple-bg: #f5f5f7;
+    --apple-card: #ffffff;
+    --apple-accent: #0071e3;
+    --apple-danger: #ff3b30;
+    --apple-success: #34c759;
+    --apple-border: #d2d2d7;
+    --apple-text: #1d1d1f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  /* ภาษาไทย Anuphan, อังกฤษ Roboto */
+  body, button, input, select, textarea {
+    font-family: 'Anuphan', 'Roboto', sans-serif;
+    color: var(--apple-text);
+    background-color: var(--apple-bg);
+  }
+  
+  /* บังคับตัวเลขเป็น Arial */
+  .num-font, input[type="number"], input[type="date"] {
+    font-family: 'Arial', sans-serif !important;
+  }
+
+  .navbar {
+    position: fixed; top: 0; width: 100%; height: 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 30px; z-index: 1000;
+    background: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  .blur-effect { backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); }
+  .nav-logo { font-weight: 700; font-size: 20px; font-family: 'Roboto', sans-serif; }
+
+  /* 🌟 แก้ไข margin ให้ถูกต้อง (เพิ่ม px) */
+  .container { 
+    max-width: 85% !important; 
+    width: 85% !important; 
+    margin: 90px auto 30px !important; 
+    padding: 0 20px; 
+  }
+  
+  .header-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+
+  .btn {
+    padding: 8px 16px; border-radius: 8px; border: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-primary { background: var(--apple-accent); color: #fff; }
+  .btn-primary:hover { background: #0077ed; }
+  .btn-secondary { background: #e5e5ea; color: #1d1d1f; }
+  .btn-secondary:hover { background: #d2d2d7; }
+  .btn-config { background: transparent; color: var(--apple-text); font-weight: 600; padding: 6px 12px; }
+  .btn-config:hover { background: rgba(0,0,0,0.05); }
+
+  /* =========================================
+     🌟 บอร์ดสินค้าแยกตามหมวดหมู่ (Category Grid)
+     ========================================= */
+  #productGrid {
+    display: block !important; /* เปลี่ยนเป็น block ปล่อยให้ Grid ย่อยทำงานแทน */
+  }
+
+  .category-grid {
+    display: grid !important;
+    grid-template-columns: repeat(10, 1fr) !important; /* จัด 10 กล่องต่อแถว ตามที่คุณตั้งค่าไว้ */
+    gap: 16px !important;
+  }
+
+  .prod-box {
+    background: var(--apple-card); border-radius: 18px; padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04); cursor: pointer; transition: 0.3s;
+    border: 1px solid transparent;
+  }
+  .prod-box:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.1); transform: translateY(-3px); border-color: var(--apple-accent); }
+  .box-sku { font-size: 18px; font-weight: bold; color: var(--apple-accent); margin-bottom: 6px; }
+  .box-desc { font-size: 13px; color: #555; height: 38px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 12px; }
+  .box-img-row { display: flex; gap: 10px; }
+  .box-img-wrapper { flex: 1; position: relative; background: #f9f9f9; border-radius: 8px; border: 1px solid #eee; overflow: hidden; aspect-ratio: 1/1; display:flex; align-items:center; justify-content:center; }
+  .box-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+  .img-badge { position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; backdrop-filter: blur(5px); }
+
+  /* 🌟 Responsive สำหรับ Category Grid */
+  @media (max-width: 1600px) { .category-grid { grid-template-columns: repeat(6, 1fr) !important; } }
+  @media (max-width: 1300px) { .category-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+  @media (max-width: 992px) { 
+    .category-grid { grid-template-columns: repeat(3, 1fr) !important; }
+    .container { width: 95% !important; max-width: 95% !important; } 
+  }
+  @media (max-width: 768px) { .category-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+  @media (max-width: 480px) { .category-grid { grid-template-columns: repeat(1, 1fr) !important; } }
+
+  /* =========================================
+     Modals (Smooth Apple Style)
+     ========================================= */
+  .modal { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+    z-index: 2000; display: flex; justify-content: center; align-items: center; 
+    opacity: 0; visibility: hidden; 
+    transition: opacity 0.3s ease, visibility 0.3s ease; 
+  }
+  .modal.active { opacity: 1; visibility: visible; }
+  .modal-content { 
+    background: var(--apple-bg); border-radius: 18px; padding: 25px; width: 95%; 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; 
+    transform: scale(0.95) translateY(15px); opacity: 0; 
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+  }
+  .modal.active .modal-content { transform: scale(1) translateY(0); opacity: 1; }
+  .modal-content h3 {
+    font-size: 20px; font-weight: 700; color: var(--apple-text); margin-top: 0;
+    margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e5e5ea;
+  }
+
+  /* =========================================
+     Forms & Inputs (Apple Style)
+     ========================================= */
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 8px; color: #1d1d1f; }
+  .input-control { 
+    width: 100%; height: 42px; border-radius: 10px; border: 1px solid var(--apple-border); 
+    padding: 0 14px; font-size: 14.5px; outline: none; background: #ffffff; 
+    transition: all 0.2s ease; box-sizing: border-box; color: var(--apple-text); font-family: inherit;
+  }
+  .input-control:focus { border-color: var(--apple-accent); box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15); }
+  .input-control:read-only { background: #f5f5f7; color: #86868b; }
+  textarea.input-control { padding-top: 12px; resize: vertical; min-height: 80px; }
+  select.input-control {
+    cursor: pointer; appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; background-size: 14px; padding-right: 40px;
+  }
+
+  /* Config Sidebar Layout */
+  .sidebar-tabs { width: 220px; background: #f5f5f7; padding: 20px 10px; border-right: 1px solid #e5e5ea; display: flex; flex-direction: column; gap: 4px; }
+  .tab-btn { padding: 12px 15px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; color: #555; transition: 0.2s; }
+  .tab-btn:hover { background: rgba(0,0,0,0.04); }
+  .tab-btn.active { background: var(--apple-accent); color: #fff; font-weight: 600; }
+  .tab-content-area { flex: 1; background: #fff; padding: 30px; display: flex; flex-direction: column; }
+  .cfg-pane { display: none; flex: 1; }
+  .cfg-pane.active { display: block; animation: fadeIn 0.3s; }
+
+  /* Detail Layout */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .apple-card { background: #fff; border: 1px solid #e5e5ea; border-radius: 14px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+  .apple-card h4 { margin-top: 0; margin-bottom: 15px; color: var(--apple-accent); font-size: 15px; border-bottom: 1px solid #f0f0f2; padding-bottom: 8px; }
+  .summary-box { background: #1d1d1f; color: #fff; padding: 15px; border-radius: 12px; margin-top: 15px; }
+  .img-preview-box { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+  .img-preview-box img { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; }
+
+  /* =========================================
+     🌟 Flatpickr Custom iOS Dark Theme
+     ========================================= */
+  .flatpickr-calendar {
+    background: #1c1c1e !important; 
+    border-radius: 14px !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+    border: 1px solid #3a3a3c !important;
+    font-family: 'Anuphan', sans-serif !important;
+    padding-bottom: 0 !important;
+  }
+  .flatpickr-months, .flatpickr-month, .flatpickr-weekdays, .flatpickr-weekdaycontainer,
+  span.flatpickr-weekday, .flatpickr-monthDropdown-months, .flatpickr-days, .dayContainer, .flatpickr-time {
+    background: transparent !important; background-color: transparent !important;
+  }
+  .flatpickr-monthDropdown-months { border: none !important; outline: none !important; }
+  .flatpickr-monthDropdown-months option { background-color: #1c1c1e !important; color: #fff !important; }
+  .flatpickr-month, .flatpickr-current-month, .flatpickr-weekday { color: #fff !important; fill: #fff !important; }
+  .flatpickr-day { color: #fff !important; border-radius: 8px !important; }
+  .flatpickr-day.today { background: #0a84ff !important; border-color: #0a84ff !important; color: #fff !important; font-weight: bold; }
+  .flatpickr-day.selected { background: #34c759 !important; border-color: #34c759 !important; color: #fff !important; }
+  .flatpickr-day:hover { background: #3a3a3c !important; border-color: #3a3a3c !important; }
+  .flatpickr-time { border-top: 1px solid #3a3a3c !important; }
+  .flatpickr-time input, .flatpickr-time .flatpickr-am-pm, .flatpickr-time .flatpickr-time-separator { color: #fff !important; }
+  .flatpickr-ios-buttons { display: flex; justify-content: space-between; padding: 12px 20px; border-top: 1px solid #3a3a3c; border-bottom-left-radius: 14px; border-bottom-right-radius: 14px; }
+  .flatpickr-ios-buttons button { color: #0a84ff; background: none; border: none; font-size: 16px; cursor: pointer; font-family: 'Anuphan', sans-serif; }
+  .flatpickr-ios-buttons button.done { font-weight: bold; }
+  .flatpickr-time input:hover, .flatpickr-time input:focus, .flatpickr-time .flatpickr-am-pm:hover, .flatpickr-time .flatpickr-am-pm:focus { background-color: #0a84ff !important; color: #fff !important; border-radius: 6px !important; }
+  .flatpickr-time .numInputWrapper:hover { background: transparent !important; }
+  
+  /* =========================================
+     🌟 Scrollbar แบบซ่อน (Sleek & Transparent)
+     ========================================= */
+  ::-webkit-scrollbar { width: 6px !important; height: 6px !important; }
+  ::-webkit-scrollbar-track { background: transparent !important; }
+  ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15) !important; border-radius: 10px !important; border: 2px solid transparent !important; background-clip: padding-box !important; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3) !important; border: 2px solid transparent !important; background-clip: padding-box !important; }
+  * { scrollbar-width: thin !important; scrollbar-color: rgba(0, 0, 0, 0.15) transparent !important; }
+
+  /* =========================================
+     🌟 จัดกลุ่มหมวดหมู่ (Category Header)
+     ========================================= */
+  .cat-header {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 12px 20px;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #1d1d1f;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    margin-bottom: 15px; 
+    transition: all 0.2s ease;
+  }
+  .cat-header:hover { background: rgba(255, 255, 255, 0.8); }
+  /* ปรับให้รองรับ SVG ภายในปุ่ม */
+  .cat-arrow svg { transform: rotate(0deg); }
+  .cat-arrow.collapsed svg { transform: rotate(-90deg); }
+  .cat-count-badge { font-size: 13px; background: rgba(0, 0, 0, 0.05); color: #1d1d1f; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+
+  /* =========================================
+     🌟 ระบบแบ่งหน้า (Pagination)
+     ========================================= */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 25px;
+  }
+  .page-btn {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #1d1d1f;
+    transition: all 0.2s ease;
+  }
+  .page-btn:hover { background: rgba(0,0,0,0.05); }
+  .page-btn.active { background: #0a84ff; color: #fff; border-color: #0a84ff; box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3); }
+
+  /* =========================================
+     🌟 Popup รูปภาพ
+     ========================================= */
+  @media (max-width: 992px) {
+    #lightboxWrapper { flex-direction: column !important; gap: 20px !important; overflow-y: auto !important; justify-content: flex-start !important; padding: 20px 0; }
+    #lightboxInfo { width: 100% !important; max-width: 400px; }
+    #lightboxImg { max-width: 100% !important; max-height: 50vh !important; }
+  }
+
+  /* =========================================
+     🌟 แถบตัวกรองสินค้า (Filter Bar)
+     ========================================= */
+  .filter-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-select {
+    padding: 8px 30px 8px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--apple-border);
+    background-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--apple-text);
+    cursor: pointer;
+    outline: none;
+    min-width: 140px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+    transition: all 0.2s ease;
+  }
+  .filter-select:focus, .filter-select:hover {
+    border-color: var(--apple-accent);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+  }
+  .filter-clear-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  /* =========================================
+     🌟 ระบบลบรายการ (Delete Mode)
+     ========================================= */
+  .btn-danger { background: var(--apple-danger); color: #fff; }
+  .btn-danger:hover { background: #d70015; }
+
+  /* เอฟเฟกต์ตอนคลิกเลือกสินค้าเพื่อลบ (ขอบแดง + หดเล็กลงนิดนึง) */
+  .prod-box.selected-delete {
+    border: 2px solid var(--apple-danger) !important;
+    background-color: rgba(255, 59, 48, 0.04);
+    transform: scale(0.97);
+    box-shadow: 0 4px 15px rgba(255, 59, 48, 0.15) !important;
+  }
+
+  /* =========================================
+     🌟 ปุ่มแยกรายการ (Split Button)
+     ========================================= */
+  .btn-split {
+    position: absolute;
+    top: 8px;       /* 🌟 ขยับขึ้นชิดขอบบนมากขึ้น */
+    right: 8px;     /* 🌟 ขยับชิดขอบขวามากขึ้น */
+    color: #ff3b30;
+    font-size: 20px; /* 🌟 ลดขนาดลงนิดหน่อย */
+    font-weight: 500;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+  }
+  .btn-split:hover {
+    transform: scale(1.3);
+  }
+
+  /* =========================================
+     🌟 ปุ่มคัดลอก Vrich (อยู่ข้างปุ่มแยกรายการ)
+     ========================================= */
+  .btn-copy-vrich {
+    position: absolute;
+    top: 10px;      /* 🌟 ขยับขึ้นให้อยู่ระดับเดียวกับ + */
+    right: 24px;    /* 🌟 ขยับชิดขวาตามปุ่ม + */
+    color: #0a84ff;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0.85); /* 🌟 ย่อขนาดไอคอนลง 15% เพื่อไม่ให้เกะกะ */
+  }
+  .btn-copy-vrich:hover {
+    transform: scale(1.1); /* ปรับเอฟเฟกต์ตอนชี้เมาส์ให้สมส่วนกับขนาดใหม่ */
+    color: #0056b3;
+  }
+
+  /* =========================================
+     🌟 ปุ่มในหน้าต่างแจ้งเตือน (Apple Dynamic Alert)
+     ========================================= */
+  #sysAlertButtons .btn {
+    flex: 1;
+    padding: 12px 15px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+  #sysAlertButtons .btn-secondary {
+    background-color: #e5e5ea; /* สีเทาแบบ iOS */
+    color: #1c1c1e;
+  }
+  #sysAlertButtons .btn-secondary:hover { background-color: #d1d1d6; }
+  
+  #sysAlertButtons .btn-danger {
+    background-color: #ff3b30; /* สีแดง Apple */
+    color: #fff;
+  }
+  #sysAlertButtons .btn-danger:hover { background-color: #d70015; }
+  
+  #sysAlertButtons .btn-primary {
+    background-color: #007aff; /* สีฟ้า Apple */
+    color: #fff;
+  }
+  #sysAlertButtons .btn-primary:hover { background-color: #0056b3; }
+
+  /* =========================================
+     🌟 กล่องลากคลุม (Drag Selection Box)
+     ========================================= */
+  #selection-lasso {
+    position: absolute;
+    background-color: rgba(255, 59, 48, 0.15); /* สีแดงโปร่งแสงแบบ Apple */
+    border: 1px dashed #ff3b30;
+    pointer-events: none; /* ให้คลิกทะลุได้ */
+    z-index: 9999;
+    display: none;
+    border-radius: 4px;
+  }
+
+  /* =========================================
+     🌟 ปรับปุ่มทั้งหมดให้โค้งมน (Pill Shape) + ขนาดอักษรเล็กลง/ไม่หนา
+     ========================================= */
+  .btn, 
+  #sysAlertButtons .btn {
+    border-radius: 999px !important; 
+    padding-left: 20px !important;  /* ปรับระยะซ้ายขวาให้รับกับตัวอักษรที่เล็กลง */
+    padding-right: 20px !important;
+    font-size: 14px !important;     /* 🌟 ปรับขนาดตัวอักษรให้เล็กลง (เปลี่ยนตัวเลขได้ตามต้องการ) */
+    font-weight: 400 !important;    /* 🌟 เอาตัวหนาออก (400 คือน้ำหนักตัวอักษรแบบปกติ/Normal) */
+  }
+
+  /* =========================================
+     🌟 แถบตัวกรอง (Filter Bar)
+     ========================================= */
+  .filter-bar-container {
+    background: #ffffff;
+    border-radius: 16px; /* ขอบโค้งมนตามภาพ */
+    padding: 12px 20px;  /* ระยะห่างภายในกล่อง */
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;     /* เผื่อกรณีหน้าจอแคบจะได้ปัดลงบรรทัดใหม่ได้ */
+    gap: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03); /* เงาบางๆ ให้กล่องดูลอยขึ้นมา */
+    margin-bottom: 24px;
+  }
+  
+  /* ตัวดันปุ่มให้อยู่ขวาสุด */
+  .filter-spacer {
+    flex: 1;
+  }
+
+  /* =========================================
+     🌟 Loader Animation (Blue Gradient Spinner)
+     ========================================= */
+  
+  /* บังคับระบบให้ซ่อน/แสดง Loader */
+  #loader.loader-box {
+    display: none;
+    margin-top: 3px; /* ดันให้ตรงกับกึ่งกลางข้อความพอดี */
+  }
+  #loader.loader-box.active,
+  #loader.loader-box[style*="block"],
+  #loader.loader-box[style*="flex"] {
+    display: block !important;
+  }
+
+  /* 🌟 ดีไซน์สปินเนอร์วงแหวนไล่ความเข้ม */
+  .blue-spinner {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    
+    /* สร้างพื้นหลังไล่สีจากโปร่งใส ไปหาสีฟ้าเข้ม (#007aff) */
+    background: conic-gradient(from 0deg, rgba(0, 122, 255, 0) 0%, rgba(0, 122, 255, 1) 100%);
+    
+    /* เจาะรูตรงกลางให้กลายเป็นวงแหวน */
+    -webkit-mask-image: radial-gradient(circle, transparent 55%, black 60%);
+    mask-image: radial-gradient(circle, transparent 55%, black 60%);
+    
+    /* สั่งให้หมุนด้วยความเร็วคงที่ */
+    animation: spinSmooth 0.8s linear infinite;
+  }
+  
+  /* คำสั่งให้หมุน 360 องศา */
+  @keyframes spinSmooth {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* =========================================
+     🌟 Navigation Tabs (Apple Minimalist Text Only)
+     ========================================= */
+  .nav-tab {
+    background: transparent !important;
+    border: none !important;
+    color: #86868b; /* สีเทาสไตล์ Apple สำหรับหน้าที่ไม่ได้เลือก */
+    font-size: 13px;
+    font-weight: 300;
+    cursor: pointer;
+    padding: 6px 12px;
+    transition: color 0.2s ease;
+    box-shadow: none !important;
+  }
+  .nav-tab:hover {
+    color: #1d1d1f; /* ชี้แล้วสีเข้มขึ้นเป็นสีดำ */
+  }
+  .nav-tab.active {
+    color: #1d1d1f; /* หน้าที่กำลังเปิดอยู่จะสีเข้ม */
+    font-weight: 600; /* ตัวหนาขึ้นนิดนึงให้รู้ว่าเลือกอยู่ */
+  }
+
+  /* =========================================
+     🌟 Purchase Order (PO) Styles
+     ========================================= */
+  /* กล่องหมวดหมู่ */
+  .cat-po-box {
+    background: #f5f5f7; border: 1px solid #e5e5ea; border-radius: 12px; padding: 15px; 
+    width: 140px; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center;
+  }
+  .cat-po-box:hover { 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+    border-color: var(--apple-accent); /* 🌟 เพิ่มขอบสีฟ้าเวลาเอาเมาส์ชี้ให้เหมือนตอนกด */
+    /* 🌟 ลบคำสั่ง transform: translateY(-3px); ออก เพื่อไม่ให้กล่องเด้งขึ้นจนขอบหาย */
+  }
+  .cat-po-box.active { background: #e0f0ff; border-color: var(--apple-accent); }
+  .cat-po-code { font-size: 20px; font-weight: 600; color: #1d1d1f; }
+  .cat-po-name { font-size: 12px; color: #86868b; font-weight: 400; margin-top: 4px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+  .po-progress-wrap { width: 100%; background: #d2d2d7; height: 6px; border-radius: 4px; margin-top: 10px; overflow: hidden; }
+  .po-progress-bar { height: 100%; background: #34c759; transition: width 0.3s; }
+
+  /* ปฏิทิน PO */
+  .po-cal-red .flatpickr-day.has-sales { background: #ffe5e5; border-color: #ff3b30; color: #ff3b30; font-weight: bold; }
+  .po-cal-red .flatpickr-day.selected { background: #34c759 !important; border-color: #34c759 !important; color: #fff !important; }
+
+  /* ปุ่มรูปแบบ */
+  .po-format-group { display: flex; background: #f2f2f7; border-radius: 8px; padding: 4px; }
+  .po-format-btn { border: none; background: transparent; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; color: #8e8e93; cursor: pointer; transition: 0.2s; }
+  .po-format-btn.active { background: #fff; color: #1d1d1f; box-shadow: 0 2px 6px rgba(0,0,0,0.05); font-weight: 600; }
+
+  /* รูปภาพ PO (เลือกได้) */
+  .po-img-wrap { position: relative; display: inline-block; cursor: pointer; border-radius: 8px; border: 2px solid transparent; padding: 2px; transition: 0.2s; }
+  .po-img-wrap img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
+  .po-img-wrap.selected { border-color: #34c759; background: #eaffed; }
+  .po-img-badge { position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); font-size: 9px; background: rgba(0,0,0,0.6); color: #fff; padding: 2px 6px; border-radius: 10px; white-space: nowrap; pointer-events: none; }
+
+  /* Input ตาราง PO (สั่งโรงงาน) */
+  .po-input-edit { 
+    width: 60px; text-align: center; 
+    border: 1px solid transparent; /* ค่าเริ่มต้นซ่อนขอบ */
+    border-radius: 6px; padding: 6px; font-size: 14px; font-weight: bold; 
+    background: transparent; /* ค่าเริ่มต้นโปร่งใส */
+    transition: all 0.2s ease; cursor: pointer; color: #1d1d1f;
+  }
+  /* เมื่อกำลังพิมพ์ (ไม่มี readonly) */
+  .po-input-edit:not([readonly]) { 
+    border-color: var(--apple-accent); 
+    background: #fff; 
+    outline: none; 
+    cursor: text; 
+    box-shadow: 0 0 0 2px rgba(0,113,227,0.1);
+  }
+  /* ซ่อนลูกศรขึ้นลงเวลามันเป็นแค่ข้อความแสดงผล */
+  .po-input-edit[readonly]::-webkit-inner-spin-button,
+  .po-input-edit[readonly]::-webkit-outer-spin-button {
+    -webkit-appearance: none; margin: 0;
+  }
+  .po-status-badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-top: 4px; }
+  .po-status-ok { background: #eaffed; color: #34c759; }
+  .po-status-over { background: #fff4e5; color: #ff9500; }
+  .po-status-short { background: #ffe5e5; color: #ff3b30; }
+
+  /* =========================================
+     🌟 PO Date Box (รายการวันที่ขาย)
+     ========================================= */
+  .po-date-box {
+    background: #f5f5f7;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .po-date-box:hover {
+    background: #ebebf0;
+  }
+  /* 🌟 สถานะถูกเลือก (กรอบสีเขียว) */
+  .po-date-box.active {
+    background: #eaffed;
+    border-color: #34c759;
+  }
+  .po-date-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d1d1f;
+  }
+  .po-date-count {
+    font-size: 12px;
+    color: #8e8e93;
+    background: #e5e5ea;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+  /* เปลี่ยนสีป้ายจำนวนเมื่อถูกเลือก */
+  .po-date-box.active .po-date-count {
+    background: #34c759;
+    color: #fff;
+  }
+
+  /* =========================================
+     🌟 แจ้งเตือนหมวดหมู่ใหม่ที่ยังไม่ได้ตั้งค่า
+     ========================================= */
+  @keyframes pulseWarning {
+    0% { box-shadow: 0 0 0 0 rgba(255, 149, 0, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(255, 149, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 149, 0, 0); }
+  }
+
+  /* =========================================
+     🌟 ระบบจัดกลุ่ม Wechat และโหมดเลือกรายการ
+     ========================================= */
+  .wechat-header-row td {
+    background: #f2f2f7 !important;
+    color: #1d1d1f;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 15px !important;
+    border-top: 2px solid #d2d2d7;
+    border-bottom: 1px solid #d2d2d7;
+  }
+  
+  /* กรอบสีเขียวและพื้นหลังอ่อนเมื่อถูกเลือก */
+  .sku-selected td {
+    background-color: #eaffed !important;
+    border-top: 2px solid #34c759 !important;
+    border-bottom: 2px solid #34c759 !important;
+  }
+  .sku-selected td:first-child { border-left: 2px solid #34c759 !important; }
+  .sku-selected td:last-child { border-right: 2px solid #34c759 !important; }
+
+  /* แถบเครื่องมือลอยตัวด้านล่าง (สำหรับย้ายกลุ่ม) */
+  #wechatActionBar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid #d2d2d7;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    padding: 15px 25px;
+    border-radius: 99px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #wechatActionBar.active {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* =========================================
+     🌟 Shipment Tracking Styles
+     ========================================= */
+  .ship-progress-row { margin-bottom: 15px; }
+  .ship-date-title { font-weight: 600; color: #1d1d1f; margin-bottom: 8px; font-size: 15px; display: flex; justify-content: space-between;}
+  
+  /* ตัวหลอดหลัก (100% ของวันนั้น) */
+  .ship-bar-container { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: #e5e5ea; width: 100%; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
+  
+  /* ช่องย่อยของแต่ละหมวดหมู่ (สีเทา) */
+  .ship-cat-segment { position: relative; height: 100%; background: #d2d2d7; border-right: 1px solid #fff; }
+  .ship-cat-segment:last-child { border-right: none; }
+  
+  /* หลอดสีสัน (ยอดที่เข้าจริง) วิ่งซ้อนอยู่ข้างใน */
+  .ship-fill-inner { height: 100%; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+
+  /* ป้ายอธิบาย (Legend) */
+  .ship-legend { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 8px; font-size: 12px; color: #555; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; vertical-align: middle; }
+
+  /* กล่องเลือกสินค้าจัดส่ง (Modal) */
+  .ship-item-box {
+    background: #fff; border: 2px solid #e5e5ea; border-radius: 12px; padding: 12px; cursor: pointer;
+    transition: all 0.2s ease; display: flex; flex-direction: column; position: relative;
+  }
+  .ship-item-box:hover { border-color: #c7c7cc; }
+  .ship-item-box.selected { border-color: #34c759; background: #f0fdf4; box-shadow: 0 4px 15px rgba(52, 199, 89, 0.15); }
+  
+  /* ช่องกรอกจำนวน (ซ่อนไว้ถ้ายังไม่เลือก) */
+  .ship-qty-input {
+    width: 100%; border: 1px solid #d2d2d7; border-radius: 6px; padding: 6px; text-align: center;
+    font-size: 16px; font-weight: bold; color: #1d1d1f; outline: none; margin-top: 10px; display: none;
+  }
+  .ship-item-box.selected .ship-qty-input { display: block; border-color: #34c759; }
+
+  /* ลูกศรเปิด/ปิด Table Row */
+  .toggle-row-btn { cursor: pointer; padding: 5px; color: #007aff; background: #e0f0ff; border-radius: 6px; text-align: center; transition: 0.2s; }
+  .toggle-row-btn:hover { background: #cce6ff; }
+
+  /* กล่องเลือก PO (หน้าจัดส่ง) */
+  .ship-po-box {
+    background: #fff;
+    border: 2px solid #e5e5ea;
+    border-radius: 10px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 160px;
+  }
+  .ship-po-box:hover {
+    border-color: #c7c7cc;
+  }
+  /* สถานะเมื่อถูกเลือก (กรอบสีเขียว) */
+  .ship-po-box.selected {
+    border-color: #34c759;
+    background: #f0fdf4;
+    box-shadow: 0 4px 10px rgba(52, 199, 89, 0.15);
+  }
+
+  /* =========================================
+     🌟 บังคับหน้าต่างแจ้งเตือน (Alert/Confirm) ให้อยู่หน้าสุดเสมอ
+     ========================================= */
+  #sysAlertModal {
+    z-index: 9999 !important;
+  }
+
+  .apple-timestamp-text {
+    font-family: 'Anuphan', 'Roboto', sans-serif;
+    font-size: 12px;
+    color: #86868b; /* สีเทาเข้มสไตล์ Apple */
+    letter-spacing: 0.3px;
+    font-weight: 400;
+  }
+
+  /* =========================================
+     🌟 Tracking Timeline Styles
+     ========================================= */
+  .track-timeline-item { display: flex; gap: 15px; position: relative; margin-bottom: 20px; }
+  
+  /* 🌟 ลบของเก่าออก และใช้ CSS ใหม่จัดการเส้นทึบเชื่อมระหว่างวันที่ */
+  .track-date-solid-line {
+    position: absolute;
+    top: 36px; 
+    bottom: -20px; 
+    left: 15px; /* จุดกึ่งกลางของไอคอนวงกลมพอดี */
+    width: 2px; 
+    background: #e5e5ea;
+    z-index: 1;
+  }
+  
+  .track-timeline-icon {
+    width: 32px; height: 32px; border-radius: 50%; background: #0a84ff; color: #fff;
+    display: flex; align-items: center; justify-content: center; z-index: 1;
+    border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0;
+  }
+  
+  .track-timeline-content {
+    background: #f9f9fb; border: 1px solid #e5e5ea; padding: 14px 16px; border-radius: 12px; flex: 1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: 0.2s;
+  }
+  .track-timeline-content:hover { border-color: #c7c7cc; background: #fff; }
+  
+  .track-timeline-header { display: flex; justify-content: space-between; font-size: 12px; color: #8e8e93; margin-bottom: 8px; }
+  .track-timeline-text { font-size: 14px; color: #1d1d1f; line-height: 1.5; white-space: pre-wrap; }
+  
+  /* Tags Button */
+  .track-tag-btn {
+    background: transparent;      /* เอาพื้นหลังออก */
+    color: #8e8e93;             /* เปลี่ยนเป็นสีเทา */
+    border: none;               /* เอาเส้นขอบออก */
+    padding: 4px 6px;           /* ลด padding ลงเล็กน้อยเพราะไม่มีขอบแล้ว */
+    border-radius: 6px;
+    font-size: 13px;            /* ปรับขนาดตัวอักษรให้พอดีกับการกด */
+    font-weight: 500;           /* ลดความหนาของตัวอักษรลงนิดหน่อยให้ดูคลีน */
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .track-tag-btn:hover { 
+    background: transparent;      /* ยืนยันว่า hover ก็ไม่มีพื้นหลัง */
+    color: #007aff;             /* เปลี่ยนข้อความเป็นสีฟ้าเมื่อชี้ */
+  }
+  
+  /* Suggestion Item */
+  .suggest-item { padding: 10px 15px; font-size: 13px; cursor: pointer; border-bottom: 1px solid #f0f0f2; transition: background 0.2s; }
+  .suggest-item:hover, .suggest-item.active { background: #f2f2f7; color: var(--apple-accent); font-weight: bold; }
+  .suggest-item:last-child { border-bottom: none; }
+
+  /* =========================================
+     🌟 แจ้งเตือนกระดิ่ง (Bell Alert)
+     ========================================= */
+  @keyframes bellShake {
+    0% { transform: rotate(0); }
+    10% { transform: rotate(15deg); }
+    20% { transform: rotate(-15deg); }
+    30% { transform: rotate(10deg); }
+    40% { transform: rotate(-10deg); }
+    50% { transform: rotate(5deg); }
+    60% { transform: rotate(-5deg); }
+    70% { transform: rotate(0); }
+    100% { transform: rotate(0); }
+  }
+  .bell-alert {
+    animation: bellShake 1.5s ease-in-out infinite;
+    transform-origin: top center;
+  }
+
+  /* =========================================
+     🌟 Tab Filter สำหรับหน้าจัดส่ง
+     ========================================= */
+  .ship-filter-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #8e8e93;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: 'Anuphan', sans-serif;
+  }
+  .ship-filter-btn.active {
+    background: #fff;
+    color: #1d1d1f;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    font-weight: 600;
+  }
+
+  /* =========================================
+     🌟 ระบบแยกรอบสั่งซื้อ (Round Selection Mode)
+     ========================================= */
+  .round-selected td {
+    background-color: #f8f0ff !important;
+    border-top: 2px solid #af52de !important;
+    border-bottom: 2px solid #af52de !important;
+  }
+  .round-selected td:first-child { border-left: 2px solid #af52de !important; }
+  .round-selected td:last-child { border-right: 2px solid #af52de !important; }
+
+  #roundActionBar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid #d2d2d7;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    padding: 15px 25px;
+    border-radius: 99px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #roundActionBar.active {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* =========================================
+     🌟 Tab Filter สำหรับหน้าจัดหมวดหมู่สั่งซื้อ (PO)
+     ========================================= */
+  .po-cat-tab-btn {
+    border: none;
+    background: transparent;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #8e8e93;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: 'Anuphan', sans-serif;
+  }
+  .po-cat-tab-btn.active {
+    background: #fff;
+    color: #1d1d1f;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    font-weight: 600;
+  }
+
+  /* =========================================
+     🌟 ปรับปุ่มทั้งหมดให้โค้งมน (Pill Shape) + ขนาดอักษรเล็กลง/ไม่หนา
+     ========================================= */
+  .btn, 
+  #sysAlertButtons .btn {
+    border-radius: 999px !important; 
+    padding-left: 20px !important;  
+    padding-right: 20px !important;
+    font-size: 14px !important;     
+    font-weight: 400 !important;    
+    white-space: nowrap !important; /* 🌟 เพิ่มบรรทัดนี้: บังคับข้อความให้อยู่แถวเดี่ยว ไม่ปัดบรรทัด */
+  }
+
+  /* เอฟเฟกต์ตอนคลิกเลือกยอดขายเพื่อลบ (ขอบแดง + พื้นหลังแดงอ่อน) */
+tr.selected-delete td {
+  background-color: rgba(255, 59, 48, 0.04) !important;
+  border-top: 2px solid var(--apple-danger) !important;
+  border-bottom: 2px solid var(--apple-danger) !important;
+}
+tr.selected-delete td:first-child { border-left: 2px solid var(--apple-danger) !important; }
+tr.selected-delete td:last-child { border-right: 2px solid var(--apple-danger) !important; }
+
+/* =========================================
+     📱 STEP 1: Navbar, หน้า 1 (สินค้า) & Modals
+     ========================================= */
+
+  @media (max-width: 768px) {
+    /* -----------------------------------
+       1. โครงสร้างหลัก (Navbar & Container) 
+       ----------------------------------- */
+        .navbar { 
+        padding: 6px 12px !important; 
+        flex-direction: column !important; 
+        height: auto !important; 
+        gap: 4px !important; 
+    }
+    /* ���� + ����� ���������ǡѹ */
+    .navbar > div:first-child { 
+        width: auto !important; 
+        justify-content: flex-start !important;
+        order: 1 !important;
+        flex: 1 !important;
+    }
+    .nav-logo { font-size: 15px !important; }
+    
+    /* ������ (�Ƿ�� 2 � ��� �зѴ�Ѵ �Ѵ���¢����) */
+    .navbar > div:nth-child(2) { 
+        width: 100% !important; 
+        overflow-x: auto !important; 
+        white-space: nowrap !important; 
+        padding: 2px 0 4px !important; 
+        justify-content: flex-start !important;
+        gap: 2px !important;
+        order: 3 !important;
+        border-top: 1px solid rgba(0,0,0,0.06) !important;
+        margin-top: 2px !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    .nav-tab {
+        font-size: 11px !important;
+        padding: 4px 8px !important;
+        flex-shrink: 0 !important;
+        border-radius: 6px !important;
+    }
+    .nav-tab.active {
+        background: rgba(0, 122, 255, 0.08) !important;
+        color: #007aff !important;
+    }
+    
+    /* ����� + ��駤�� � ������зѴ�Ѵ �����ҧ���� */
+    .navbar > div:last-child { 
+        width: auto !important; 
+        justify-content: flex-end !important;
+        order: 2 !important;
+        gap: 8px !important;
+        position: absolute !important;
+        right: 12px !important;
+        top: 6px !important;
+    }
+    /* ��͹���� "��駤���к�" ����Ͷ�� */
+    #btnSysConfig { display: none !important; }
+    /* ��͹��鹤�� */
+    .navbar > div:last-child > div[style*="width: 1px"] { display: none !important; }
+    /* ��͹���� + role ������ٻ����� */
+    #navUserName, #navUserRole { display: none !important; }
+    /* Ŵ��Ҵ�ٻ����� */
+    #navUserProfilePic { width: 30px !important; height: 30px !important; }
+    
+    .container { 
+        margin-top: 75px !important;
+        width: 100% !important; 
+        max-width: 100% !important; 
+        padding: 0 12px !important; 
+    }
+
+    /* -----------------------------------
+       2. หน้า 1: ฐานข้อมูลสินค้า (#page1)
+       ----------------------------------- */
+    #page1 .header-action { 
+        flex-direction: column !important; 
+        align-items: flex-start !important; 
+        gap: 12px !important; 
+    }
+    /* กลุ่มปุ่มด้านขวาบน (เพิ่มสินค้า, คำนวณต้นทุน) */
+    #page1 .header-action > div:last-child {
+        display: flex; 
+        flex-wrap: wrap; 
+        width: 100%; 
+        gap: 8px;
+    }
+    #page1 .header-action > div:last-child .btn {
+        flex: 1; /* ให้ปุ่มแบ่งขนาดเท่าๆ กัน */
+        min-width: 45%; 
+        justify-content: center;
+    }
+    
+    /* แถบค้นหาและตัวกรอง */
+    #page1 .filter-bar { 
+        flex-direction: column !important; 
+        align-items: stretch !important; 
+    }
+    #page1 .filter-bar > div { width: 100% !important; }
+    
+    /* กล่องสินค้าบนมือถือ (ให้แสดง 2 กล่องต่อ 1 แถว) */
+    .category-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+
+    /* -----------------------------------
+       3. จัดการ Modal ของหน้า 1
+       ----------------------------------- */
+    /* บังคับขนาด Modal บนมือถือให้พอดีจอ */
+    .modal-content { 
+        width: 95% !important; 
+        max-width: 100% !important; 
+        padding: 20px !important; 
+    }
+    
+    /* Modal รายละเอียดสินค้า (ปรับ 3 คอลัมน์ ให้ซ้อนทับกันเป็นแนวตั้ง) */
+    #detailModal .modal-content > div:nth-child(2) {
+        display: flex !important;
+        flex-direction: column !important; /* เรียงจากบนลงล่าง */
+        gap: 15px !important;
+    }
+    
+    /* Modal เครื่องคิดเลขต้นทุน */
+    #calcCostModal .modal-content > div:nth-child(2) {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+  }
+
+  /* --- 💻 สำหรับ Tablet --- */
+  @media (max-width: 992px) {
+    .category-grid { grid-template-columns: repeat(2, 1fr) !important; } /* แท็บเล็ตโชว์ 3 กล่อง */
+  }
+
+  /* --- 🖥️ สำหรับ Laptop เล็ก --- */
+  @media (max-width: 1200px) {
+    .category-grid { grid-template-columns: repeat(2, 1fr) !important; } /* จอเล็กโชว์ 4 กล่อง */
+  }
+
+  /* =========================================
+     📱 STEP 2: หน้า 2 (สรุปจำนวนขาย-สั่งซื้อ) & Modal Upload VR
+     ========================================= */
+
+  @media (max-width: 768px) {
+    /* -----------------------------------
+       1. Header หน้า 2 (กลุ่มหัวข้อและปุ่ม)
+       ----------------------------------- */
+    #page2 .header-action { 
+        flex-direction: column !important; 
+        align-items: flex-start !important; 
+        gap: 12px !important; 
+    }
+    #page2 .header-action > div:last-child {
+        display: flex; 
+        flex-wrap: wrap; 
+        width: 100%; 
+        gap: 8px;
+    }
+    #page2 .header-action > div:last-child .btn {
+        flex: 1; 
+        min-width: 45%; 
+        justify-content: center;
+    }
+
+    /* -----------------------------------
+       2. แถบค้นหาและตัวกรอง (Filter Bar)
+       ----------------------------------- */
+    #page2 .filter-bar { 
+        flex-direction: column !important; 
+        align-items: stretch !important; 
+        gap: 12px !important;
+        padding: 15px !important;
+    }
+    /* ให้ช่องค้นหาและ Dropdown ขยายเต็มความกว้าง */
+    #page2 .filter-bar > div { width: 100% !important; }
+    #page2 .filter-bar input, 
+    #page2 .filter-bar select { 
+        width: 100% !important; 
+        max-width: 100% !important; 
+    }
+    /* กลุ่ม Dropdown ตัวกรอง ให้เรียงเป็น 2 คอลัมน์ */
+    #page2 .filter-bar > div:last-child {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+    }
+    #page2 .filter-bar > div:last-child .filter-clear-btn {
+        grid-column: 1 / -1; /* ปุ่มล้างการค้นหาให้เต็มบรรทัดล่างสุด */
+    }
+    
+    /* -----------------------------------
+       3. ตารางยอดขาย (Apple Table)
+       ----------------------------------- */
+    /* บังคับตารางไม่ให้หดตัวจนเกินไป เพื่อให้เกิด Scroll เลื่อนซ้ายขวาได้ */
+    #page2 .apple-table {
+        min-width: 900px !important; 
+    }
+    
+    /* -----------------------------------
+       4. Modal: อัปโหลดไฟล์ VR
+       ----------------------------------- */
+    #vrUploadModal .modal-content {
+        width: 95% !important;
+        max-width: 100% !important;
+        padding: 20px !important;
+    }
+    #vrDropZone {
+        padding: 25px 15px !important; /* ลดขนาดพื้นที่ลากวางบนมือถือ */
+    }
+    /* ปรับปุ่มด้านล่างของ Modal อัปโหลดให้เรียงเป็นแนวตั้ง */
+    #vrUploadModal .modal-content > div:last-child {
+        display: flex !important;
+        flex-direction: column-reverse !important; /* สลับให้ปุ่ม "ยกเลิก" อยู่ล่างสุด */
+        gap: 10px !important;
+        border-top: none !important;
+        padding-top: 10px !important;
+    }
+    #vrUploadModal .modal-content > div:last-child .btn {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+  }
+
+  /* =========================================
+     📱 STEP 3: หน้า 3 (ไฟล์สั่งซื้อ Purchase Order)
+     ========================================= */
+
+  @media (max-width: 768px) {
+    /* -----------------------------------
+       1. กล่องวันที่ และ กล่องหมวดหมู่
+       ----------------------------------- */
+    /* จับ 2 กล่องมาเรียงซ้อนกัน (บน-ล่าง) */
+    .container { margin-top: 75px !important; }
+  #page3 > .container > div:nth-child(2) { 
+        flex-direction: column !important; 
+        height: auto !important; 
+        gap: 15px !important;
+    }
+    /* ปรับความสูงกล่อง "วันที่ขาย" ให้สั้นลง (มี Scroll ในตัว) */
+    #page3 > .container > div:nth-child(2) > div:first-child { 
+        width: 100% !important; 
+        height: 220px !important; 
+    }
+    /* ปรับความสูงกล่อง "หมวดหมู่ที่มียอดขาย" */
+    #page3 > .container > div:nth-child(2) > div:last-child { 
+        width: 100% !important; 
+        height: 280px !important; 
+    }
+    
+    /* -----------------------------------
+       2. แถบเครื่องมือจัดการ PO (ปุ่ม Format, สถานะ, ดาวน์โหลด)
+       ----------------------------------- */
+    #page3 .apple-card > div:nth-child(1) { 
+        flex-direction: column !important; 
+        align-items: stretch !important; 
+        gap: 15px !important; 
+    }
+    
+    /* กล่องข้อมูล "เลขเอกสาร/จำนวนรหัส/สถานะ" (ให้ตัดบรรทัดได้) */
+    #poInfoHeader {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        height: auto !important;
+        gap: 8px !important;
+        padding: 12px !important;
+    }
+    /* ซ่อนเส้นคั่นแนวตั้งในกล่องสถานะ */
+    #poInfoHeader > div[style*="width: 1px"] {
+        display: none !important;
+    }
+
+    /* กลุ่มตั้งค่ารูปแบบ (Pieces, Pack, Set, Carton) */
+    #page3 .apple-card > div:nth-child(1) > div:last-child {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        gap: 10px !important;
+    }
+    .po-format-group {
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    .po-format-btn {
+        flex: 1 1 45% !important; /* จัดปุ่มเป็น 2 คอลัมน์บนมือถือ */
+    }
+
+    /* ปุ่ม "บันทึกลงระบบ" และ "ดาวน์โหลด" (ขยายเต็มจอ) */
+    #page3 .apple-card > div:nth-child(1) > div:last-child > button,
+    #page3 .apple-card > div:nth-child(1) > div:last-child > div {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    #page3 .apple-card > div:nth-child(1) > div:last-child > div > button {
+        width: 100% !important; /* ปุ่มใน Dropdown */
+    }
+
+    /* -----------------------------------
+       3. แถบตั้งค่ากลุ่ม Wechat
+       ----------------------------------- */
+    #page3 .apple-card > div:nth-child(2) {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        padding-bottom: 20px !important;
+    }
+    #page3 .apple-card > div:nth-child(2) > div {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    #mainWechatSelect { 
+        width: 100% !important; 
+        margin-top: 6px !important;
+    }
+
+    /* -----------------------------------
+       4. แถบลอยสำหรับ ย้ายกลุ่ม Wechat / แยกรอบสั่งซื้อ (Floating Actions)
+       ----------------------------------- */
+    #wechatActionBar, #roundActionBar {
+        width: 90% !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 20px !important;
+        border-radius: 20px !important;
+        gap: 10px !important;
+    }
+    /* ซ่อนเส้นคั่นในแถบลอย */
+    #wechatActionBar > div[style*="width: 1px"], 
+    #roundActionBar > div[style*="width: 1px"] {
+        display: none !important;
+    }
+    #actionWechatSelect, #actionRoundSelect,
+    #roundFltColor, #roundFltSize, #roundFltPattern {
+        width: 100% !important;
+    }
+
+    /* -----------------------------------
+       5. ล็อคตารางไฟล์สั่งซื้อ
+       ----------------------------------- */
+    #poTable {
+        min-width: 1200px !important; /* บังคับให้ปัดซ้ายขวาเสมอ */
+    }
+  }
+
+  /* =========================================
+     📱 STEP 4: หน้า 4 (ติดตามการจัดส่ง) & Modals (อัปเดตแก้ตารางเบียด)
+     ========================================= */
+
+  @media (max-width: 768px) {
+    /* 1. โครงสร้างหลักของหน้า 4 */
+    #page4 > .container > div:first-child { 
+        flex-direction: column !important; 
+        gap: 20px !important;
+    }
+    #page4 > .container > div:first-child > div:nth-child(1),
+    #page4 > .container > div:first-child > div:nth-child(2) { 
+        width: 100% !important; 
+        flex: none !important; 
+    }
+
+    /* 2. แถบปุ่มด้านบน */
+    #page4 > .container > div:first-child > div:nth-child(2) > div:first-child {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        height: auto !important;
+        gap: 15px !important;
+    }
+    #page4 > .container > div:first-child > div:nth-child(2) > div:first-child > div:last-child {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important; 
+        gap: 8px !important;
+        width: 100% !important;
+    }
+    #page4 > .container > div:first-child > div:nth-child(2) > div:first-child > div:last-child > .btn {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 12px 8px !important;
+        font-size: 12px !important; 
+    }
+
+    /* 3. รายงานสินค้าเข้าคลัง (Progress Bar) */
+    .ship-progress-row { margin-bottom: 25px !important; }
+    .ship-date-title { flex-direction: column !important; gap: 8px !important; }
+    .ship-progress-row > div:last-child { 
+        justify-content: space-between !important; 
+        gap: 8px !important; 
+        padding: 12px !important; 
+    }
+    .ship-progress-row > div:last-child > div {
+        flex-direction: column !important; 
+        align-items: center !important;
+        gap: 4px !important;
+        width: 22% !important;
+    }
+    .ship-progress-row > div:last-child > div[style*='width:1px'],
+    .ship-progress-row > div:last-child > div[style*='width: 1px'] { 
+        display: none !important; 
+    }
+
+    /* -----------------------------------
+       🌟 4. แก้ปัญหาตารางรายการจัดส่ง และ Timeline บีบอัดจนเละ
+       ----------------------------------- */
+    #shipmentBoardContainer .apple-card > div:first-child {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+    #shipmentBoardContainer .apple-card > div:first-child > div:last-child {
+        width: 100% !important;
+        flex-direction: column !important;
+        align-items: flex-start !important; /* ป้องกันป้ายแจ้งเตือนยืดยาวผิดปกติ */
+        gap: 10px !important;
+    }
+    
+    /* บังคับให้กล่องที่ครอบตารางสามารถปัดซ้ายขวาได้ */
+    #shipmentBoardContainer .apple-card > div:nth-child(2) {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 15px 0 !important; /* ลบ Padding ด้านข้างออกให้ไถง่ายขึ้น */
+    }
+    
+    /* ล็อคความกว้างของตารางและ Timeline ให้มีพื้นที่หายใจ ข้อความจะไม่ซ้อนทับกัน */
+    #shipmentBoardContainer table {
+        min-width: 850px !important; 
+    }
+    
+    /* ส่วนหัวตาราง "ตรวจสอบ" ใน Modal จัดการรายการ (แก้ไขการแสดงผล) */
+    div[style*='border-bottom: 1px dashed'] > div:first-child {
+        position: static !important; 
+        margin-bottom: 15px !important;
+        width: 100% !important;
+    }
+    div[style*='border-bottom: 1px dashed'] > div:first-child button {
+        width: 100% !important;
+        text-align: center !important;
+        justify-content: center !important;
+    }
+
+    /* 5. Modal: เพิ่ม/แก้ไขการจัดส่ง */
+    #shipmentModal .modal-content > div:nth-child(2) { 
+        flex-direction: column !important; 
+        overflow-y: auto !important;
+    }
+    #shipmentModal .modal-content > div:nth-child(2) > div:first-child { 
+        width: 100% !important; 
+        padding-right: 0 !important; 
+        flex: none !important;
+    }
+    #shipmentModal .po-format-group { display: flex !important; }
+    #shipmentModal .form-group[style*='flex: 1'] { margin-bottom: 10px !important; }
+    #shipmentModal div[style*='display: flex; gap: 10px'] { flex-direction: column !important; gap: 0 !important; }
+
+    #ship_poBoxContainer { grid-template-columns: repeat(2, 1fr) !important; } 
+    #ship_itemGrid { grid-template-columns: repeat(1, 1fr) !important; } 
+
+    /* 6. Modal: ตรวจสอบพัสดุ / ใบส่งของ */
+    #deliverySlipModal .modal-content > div[style*='display: grid'] {
+        grid-template-columns: 1fr !important; 
+    }
+    #deliverySlipModal .apple-card { padding: 15px !important; }
+    #inp_boxActual { width: 100% !important; }
+    #deliverySlipModal .apple-card[style*='justify-content: space-between'] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 15px !important;
+    }
+    #deliverySlipModal .apple-card[style*='justify-content: space-between'] > div:last-child {
+        width: 100% !important;
+    }
+
+    /* 7. Modal: ตรวจนับสินค้าเข้าโกดัง */
+    #shipItem_content > div:nth-child(1) {
+        flex-direction: column !important; 
+        align-items: center !important;
+        text-align: center !important;
+    }
+    #shipItem_content > div:nth-child(2) {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 10px !important;
+    }
+    #shipItem_content > div:nth-child(2) > div[style*='width: 1px'] { display: none !important; }
+    #shipItem_content > div:nth-child(3) > div:first-child {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    #shipItem_content > div:nth-child(3) > div:first-child > div {
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: 1px dashed #d2d2d7 !important;
+        padding: 0 0 15px 0 !important;
+    }
+    #shipItem_content > div:nth-child(3) > div:first-child > div:last-child {
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+    }
+    #mdl_actual, #mdl_damage { width: 100% !important; }
+  }
+
+  /* --- 💻 สำหรับ Tablet หน้า 4 --- */
+  @media (max-width: 992px) {
+    #shipmentBoardContainer .apple-card > div:first-child { flex-direction: column !important; align-items: stretch !important; }
+    #ship_poBoxContainer { grid-template-columns: repeat(3, 1fr) !important; }
+    #ship_itemGrid { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+
+  /* =========================================
+     📱 STEP 5: หน้า 5 (สรุปติดตาม) & Modals 
+     ========================================= */
+
+  @media (max-width: 768px) {
+    /* -----------------------------------
+       1. Header หน้า 5 และแท็บสถานะ
+       ----------------------------------- */
+    #page5 .header-action { 
+        flex-direction: column !important; 
+        align-items: flex-start !important; 
+        margin-bottom: 15px !important;
+    }
+    
+    /* กล่องข้อความหัวข้อ + ปุ่ม Tab (รอดำเนินการ / เรียบร้อยแล้ว) */
+    #page5 .apple-card > div:first-child {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 15px !important;
+    }
+    /* ให้ปุ่ม Tab ขยายเต็ม 2 ฝั่งบนมือถือ */
+    #page5 .apple-card > div:first-child > div:last-child {
+        width: 100% !important;
+    }
+    #page5 .po-cat-tab-btn {
+        flex: 1 !important;
+        text-align: center !important;
+        padding: 8px 10px !important; /* ขยายปุ่มให้เต็มนิ้ว */
+    }
+
+    /* -----------------------------------
+       2. กล่องหัวข้อหมวดหมู่ในตาราง (ที่พับเก็บได้)
+       ----------------------------------- */
+    #trackingSummaryContainer .apple-card > div:first-child {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+    #trackingSummaryContainer .apple-card > div:first-child h2 {
+        font-size: 14px !important;
+        line-height: 1.5 !important;
+        align-items: flex-start !important;
+    }
+    /* ป้าย Badge สีฟ้า (จำนวนรายการ) ให้ดันมาอยู่ชิดซ้ายเวลาตกบรรทัด */
+    #trackingSummaryContainer .apple-card > div:first-child > div:last-child {
+        align-self: flex-start !important;
+        padding-left: 42px !important; /* ดันให้ตรงกับตัวอักษรของหัวข้อ */
+    }
+
+    /* -----------------------------------
+       3. Modal: รายละเอียดหมวดหมู่ (Category Status Detail)
+       ----------------------------------- */
+    /* เปลี่ยนจาก 4 คอลัมน์ (เข้าครบ, บางส่วน, ไม่เข้า, ยกเลิก) เป็น 1 คอลัมน์เรียงลงมา */
+    #catStatusModalBody > div[style*="display: grid"] {
+        grid-template-columns: 1fr !important; 
+        gap: 20px !important;
+        padding: 15px !important;
+        height: auto !important; /* ปลดล็อคความสูง */
+    }
+    /* ปลดล็อคความสูงของแต่ละบล็อคให้เลื่อนดูอิสระ */
+    #catStatusModalBody > div[style*="display: grid"] > div {
+        max-height: 400px !important; 
+    }
+
+    /* -----------------------------------
+       4. Modal: รายการสินค้ารายสถานะ (Status Detail)
+       ----------------------------------- */
+    /* บังคับตารางให้มีความกว้างขั้นต่ำ เพื่อให้ใช้นิ้วปัดซ้าย-ขวาได้ ไม่บีบรูปภาพ */
+    #statusDetailModal .modal-content table {
+        min-width: 600px !important; 
+    }
+    #statusDetailModal .modal-content > div:nth-child(2) {
+        overflow-x: auto !important; /* เปิดใช้งาน Scroll แนวนอน */
+        -webkit-overflow-scrolling: touch !important; /* เลื่อนลื่นๆ บน iOS */
+    }
+    
+    /* ปรับปุ่มด้านล่าง (คัดลอกรหัส & ปิดหน้าต่าง) ให้เต็มจอ */
+    #statusDetailModal .modal-content > div:last-child {
+        flex-direction: column-reverse !important; /* สลับให้ปุ่มปิดไปอยู่ล่างสุด */
+        gap: 10px !important;
+    }
+    #statusDetailModal .modal-content > div:last-child button {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+  }
+
+  /* --- 💻 สำหรับ Tablet (หน้า 5 Modals) --- */
+  @media (max-width: 992px) {
+    /* บนแท็บเล็ตให้ Modal รายละเอียดหมวดหมู่โชว์ 2 คอลัมน์ (2x2) */
+    #catStatusModalBody > div[style*="display: grid"] {
+        grid-template-columns: repeat(2, 1fr) !important; 
+    }
+  }
+
+  /* =========================================
+     📱 STEP 6: หน้า 6-7-8 (จัดการสิทธิ์, System Log, จัดการบิล) 
+     ========================================= */
+
+  @media (max-width: 768px) {
+    /* -----------------------------------
+       1. หน้า 6: จัดการสิทธิ์ผู้ใช้งาน (#page6)
+       ----------------------------------- */
+    #page6 .header-action {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+    
+    /* ล็อคตารางจัดการสิทธิ์ให้ปัดซ้าย-ขวาได้ และไม่ให้ Dropdown ทะลุ */
+    #page6 .apple-card {
+        padding: 0 !important; /* เอา Padding ออกเพื่อให้ตารางชิดขอบ */
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    #page6 .apple-table {
+        min-width: 900px !important; /* บังคับความกว้างขั้นต่ำ เพื่อไม่ให้เบียด */
+    }
+    /* ขยายความกว้างช่อง Dropdown สิทธิ์เข้าถึงให้กดง่ายขึ้น */
+    .role-access-dropdown {
+        width: 190px !important;
+    }
+
+    /* -----------------------------------
+       2. หน้า 7: System Log (#page7)
+       ----------------------------------- */
+    /* กลุ่มหัวข้อและปุ่มรีเฟรช */
+    #page7 .header-action {
+        flex-direction: row !important; /* ให้ปุ่มรีเฟรชอยู่ขวาบนเหมือนเดิม */
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+    #page7 .header-action h2 {
+        font-size: 20px !important;
+        display: flex;
+        flex-direction: column; /* ให้วงเล็บตกลงมาบรรทัดล่าง */
+        gap: 4px;
+    }
+    
+    /* กล่องค้นหาวันที่ (Filter) */
+    #page7 .apple-card:nth-child(2) {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+    #page7 .apple-card:nth-child(2) > div:nth-child(1) {
+        margin-bottom: 4px !important; /* ข้อความ "ตัวกรองวันที่:" */
+    }
+    #page7 .apple-card:nth-child(2) > div:nth-child(2) {
+        width: 100% !important; /* ขยายกล่องปฏิทินเต็มจอ */
+    }
+    #page7 .apple-card:nth-child(2) button {
+        width: 100% !important; /* ขยายปุ่มล้างตัวกรองเต็มจอ */
+        justify-content: center !important;
+    }
+
+    /* ตาราง Log */
+    #page7 .apple-card:nth-child(3) {
+        padding: 0 !important;
+        overflow-x: auto !important;
+    }
+    #page7 .apple-table {
+        min-width: 700px !important; 
+    }
+
+    /* -----------------------------------
+       3. หน้า 8: จัดการบิล (#page8)
+       ----------------------------------- */
+    /* กลุ่มหัวข้อและปุ่มรีเฟรช */
+    #page8 .header-action > div:first-child {
+        align-items: flex-start !important;
+    }
+    #page8 .header-action h2 {
+        font-size: 20px !important;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    /* ดันปุ่มรีเฟรชลงมาให้ตรงกับหัวข้อ */
+    #page8 .header-action > div:first-child > button {
+        margin-top: 4px !important;
+    }
+
+    /* ช่องค้นหาบิล */
+    #page8 .header-action > div:last-child {
+        width: 100% !important;
+    }
+    #page8 .header-action > div:last-child input {
+        width: 100% !important; /* ขยายเต็มจอ */
+        max-width: 100% !important;
+    }
+    /* ยกเลิก Effect ยืดหดตอนเอาเมาส์คลิกบนมือถือ (เพราะมันเต็มจออยู่แล้ว) */
+    #billSearchInput:focus {
+        width: 100% !important;
+    }
+
+    /* -----------------------------------
+       8. Modal: 2-column layout on mobile (Receipt Modals)
+       ----------------------------------- */
+    #goodsReceiptModal .modal-content > div:nth-child(2),
+    #itemReceiptModal .modal-content > div:nth-child(2) {
+      flex-direction: column !important;
+      overflow-y: auto !important;
+    }
+    #goodsReceiptModal .modal-content > div:nth-child(2) > div:first-child,
+    #itemReceiptModal .modal-content > div:nth-child(2) > div:first-child {
+      width: 100% !important;
+      min-width: 100% !important;
+      height: 300px !important;
+      flex-shrink: 0 !important;
+      border-right: none !important;
+      border-bottom: 1px solid #e5e5ea !important;
+    }
+    #goodsReceiptModal .modal-content > div:nth-child(2) > div:last-child,
+    #itemReceiptModal .modal-content > div:nth-child(2) > div:last-child {
+      min-height: 400px !important;
+      flex: none !important;
+    }
+  }
+
+@media (max-width: 768px) {
+  /* -----------------------------------
+     9. Modal: Bill Detail Mobile Layout
+     ----------------------------------- */
+  #billDetailModal .modal-content {
+    width: 95% !important;
+    max-width: 95% !important;
+    height: 90vh !important;
+    max-height: 90vh !important;
+  }
+  #billDetailModal .modal-content > div:nth-child(2) {
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+  #poImageModal .modal-content {
+    width: 95% !important;
+    max-width: 95% !important;
+  }
+  #sysConfigModal .modal-content {
+    width: 95% !important;
+    max-width: 95% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  #configModal .modal-content {
+    width: 95% !important;
+    max-width: 95% !important;
+    flex-direction: column !important;
+  }
+  .sidebar-tabs {
+    width: 100% !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid #e5e5ea !important;
+  }
+  .tab-btn {
+    white-space: nowrap !important;
+  }
+}
+
+/* =========================================
+   RESPONSIVE OVERHAUL
+   ========================================= */
+
+@media (max-width: 1200px) {
+  .navbar > div:nth-child(2) { gap: 8px !important; }
+  .nav-tab { font-size: 12px !important; padding: 6px 8px !important; }
+  #billsGridContainer { grid-template-columns: repeat(6, 1fr) !important; }
+}
+
+@media (max-width: 992px) {
+  .navbar { padding: 10px 15px !important; flex-wrap: wrap !important; height: auto !important; gap: 8px !important; }
+  .navbar > div:nth-child(2) { width: 100% !important; overflow-x: auto !important; white-space: nowrap !important; -webkit-overflow-scrolling: touch !important; gap: 6px !important; padding-bottom: 4px !important; justify-content: flex-start !important; }
+  .nav-tab { font-size: 12px !important; padding: 6px 10px !important; flex-shrink: 0 !important; }
+  .container { margin-top: 100px !important; width: 95% !important; max-width: 95% !important; }
+  .btn, #sysAlertButtons .btn { padding-left: 14px !important; padding-right: 14px !important; font-size: 13px !important; }
+  .header-action { flex-wrap: wrap !important; gap: 10px !important; }
+  .header-action > div:last-child { flex-wrap: wrap !important; gap: 8px !important; }
+  #page4 > .container > div:first-child { flex-direction: column !important; gap: 20px !important; }
+  #page4 > .container > div:first-child > div:nth-child(1), #page4 > .container > div:first-child > div:nth-child(2) { width: 100% !important; flex: none !important; }
+  #billsGridContainer { grid-template-columns: repeat(4, 1fr) !important; }
+  #configModal .modal-content { width: 90% !important; max-width: 90% !important; height: 85vh !important; max-height: 85vh !important; }
+  #billDetailModal .modal-content { width: 90% !important; max-width: 90% !important; }
+  #detailModal .modal-content > div:nth-child(2) { grid-template-columns: repeat(2, 1fr) !important; }
+  #shipmentModal .modal-content > div:nth-child(2) { flex-direction: column !important; }
+  #shipmentModal .modal-content > div:nth-child(2) > div:first-child { width: 100% !important; flex-shrink: 1 !important; }
+  #ship_poBoxContainer { grid-template-columns: repeat(3, 1fr) !important; }
+  #ship_itemGrid { grid-template-columns: repeat(3, 1fr) !important; }
+  #goodsReceiptModal .modal-content > div:nth-child(2), #itemReceiptModal .modal-content > div:nth-child(2) { flex-direction: column !important; overflow-y: auto !important; }
+  #goodsReceiptModal .modal-content > div:nth-child(2) > div:first-child, #itemReceiptModal .modal-content > div:nth-child(2) > div:first-child { width: 100% !important; min-width: 100% !important; height: 350px !important; flex-shrink: 0 !important; border-right: none !important; border-bottom: 1px solid #e5e5ea !important; }
+  #goodsReceiptModal .modal-content > div:nth-child(2) > div:last-child, #itemReceiptModal .modal-content > div:nth-child(2) > div:last-child { min-height: 400px !important; flex: none !important; }
+  #calcCostModal .modal-content > div:nth-child(2) { display: flex !important; flex-direction: column !important; gap: 20px !important; }
+  #lightboxWrapper { flex-direction: column !important; gap: 20px !important; overflow-y: auto !important; justify-content: flex-start !important; padding: 20px 0 !important; }
+  #lightboxInfo { width: 100% !important; max-width: 500px !important; flex-shrink: 1 !important; }
+  #lightboxImg { max-width: 90vw !important; max-height: 50vh !important; }
+  #compareLightbox > div > div { flex-direction: column !important; gap: 15px !important; height: auto !important; max-height: 90vh !important; overflow-y: auto !important; }
+  #compareLightbox > div > div > div { width: 100% !important; height: 45vh !important; }
+}
+
+@media (max-width: 768px) {
+  .btn, #sysAlertButtons .btn { padding: 8px 12px !important; font-size: 12px !important; min-height: 36px !important; }
+  .header-action > div:last-child .btn { flex: 1 1 auto !important; min-width: 0 !important; text-align: center !important; justify-content: center !important; }
+  .po-format-btn { padding: 6px 10px !important; font-size: 12px !important; flex: 1 1 auto !important; }
+  .container { margin-top: 75px !important; }
+  #page3 > .container > div:nth-child(2) { height: auto !important; }
+  #page3 .apple-card > div:first-child > div:last-child { flex-wrap: wrap !important; gap: 8px !important; }
+  #page3 .apple-card > div:first-child > div:last-child > button, #page3 .apple-card > div:first-child > div:last-child > div { flex: 1 1 auto !important; }
+  #billsGridContainer { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+
+  #configModal .modal-content, #billDetailModal .modal-content, #detailModal .modal-content,
+  #shipmentModal .modal-content, #goodsReceiptModal .modal-content, #itemReceiptModal .modal-content,
+  #calcCostModal .modal-content, #vrModal .modal-content, #poExportModal .modal-content,
+  #deliverySlipModal .modal-content, #poImageModal .modal-content, #trackingModal .modal-content,
+  #profileModal .modal-content, #statusDetailModal .modal-content, #categoryStatusDetailModal .modal-content,
+  #shipItemModal .modal-content, #transitConfigModal .modal-content, #addProdModal .modal-content,
+  #addCatModal .modal-content, #editCatModal .modal-content, #splitModal .modal-content {
+    width: 95% !important; max-width: 95% !important; padding: 18px !important; max-height: 90vh !important; overflow-y: auto !important;
+  }
+
+  #configModal .modal-content { height: auto !important; max-height: 90vh !important; flex-direction: column !important; overflow: auto !important; }
+
+  #billDetailModal .modal-content { height: 90vh !important; max-height: 90vh !important; }
+  #billDetailModal .modal-content > div:nth-child(2) { flex-direction: column !important; gap: 15px !important; }
+  #billDetailModal .modal-content > div:nth-child(2) > div div[style*="width:100px"],
+  #billDetailModal .modal-content > div:nth-child(2) > div div[style*="width: 100px"] { width: 80px !important; min-width: 80px !important; flex-shrink: 0 !important; }
+  #billDetailModal .modal-content > div:nth-child(2) > div[style*="width: 1px"],
+  #billDetailModal .modal-content > div:nth-child(2) > div[style*="width:1px"] { display: none !important; }
+
+  #detailModal .modal-content { padding: 15px !important; }
+  #detailModal .modal-content > div:nth-child(2) { display: flex !important; flex-direction: column !important; gap: 15px !important; }
+  #detailModal .modal-content div[style*="display:flex"][style*="gap:10px"],
+  #detailModal .modal-content div[style*="display: flex"][style*="gap: 10px"] { flex-wrap: wrap !important; }
+  #detailModal .modal-content div[style*="display:flex"][style*="gap:10px"] > div,
+  #detailModal .modal-content div[style*="display: flex"][style*="gap: 10px"] > div { min-width: 45% !important; flex: 1 1 45% !important; }
+  #detailModal .modal-content > div:last-child { flex-direction: column !important; gap: 10px !important; }
+  #detailModal .modal-content > div:last-child .btn { width: 100% !important; }
+
+  #shipmentModal .modal-content { padding: 15px !important; }
+  #shipmentModal .modal-content > div:nth-child(2) { flex-direction: column !important; overflow-y: auto !important; }
+  #shipmentModal .modal-content > div:nth-child(2) > div:first-child { width: 100% !important; flex-shrink: 1 !important; padding-right: 0 !important; border-right: none !important; border-bottom: 1px solid #e5e5ea !important; padding-bottom: 15px !important; margin-bottom: 15px !important; }
+  #shipmentModal .modal-content div[style*="display: flex"][style*="gap: 10px"] { flex-wrap: wrap !important; }
+  #shipmentModal .modal-content div[style*="display: flex"][style*="gap: 10px"] > .form-group,
+  #shipmentModal .modal-content div[style*="display: flex"][style*="gap: 10px"] > div { min-width: 100% !important; flex: 1 1 100% !important; }
+  #ship_poBoxContainer { grid-template-columns: repeat(2, 1fr) !important; }
+  #ship_itemGrid { grid-template-columns: repeat(1, 1fr) !important; }
+  #shipmentModal .modal-content > div:last-child { flex-direction: column !important; gap: 10px !important; }
+  #shipmentModal .modal-content > div:last-child .btn { width: 100% !important; }
+
+  #goodsReceiptModal .modal-content, #itemReceiptModal .modal-content { height: 90vh !important; max-height: 90vh !important; }
+
+  #calcCostModal .modal-content { padding: 20px !important; }
+  #calcCostModal .modal-content > div:nth-child(2) { display: flex !important; flex-direction: column !important; gap: 15px !important; }
+  #calcCostModal .modal-content div[style*="display:flex"][style*="gap:10px"],
+  #calcCostModal .modal-content div[style*="display: flex"][style*="gap: 10px"] { flex-wrap: wrap !important; }
+  #calcCostModal .modal-content div[style*="display:flex"][style*="gap:10px"] > .form-group,
+  #calcCostModal .modal-content div[style*="display: flex"][style*="gap: 10px"] > .form-group { min-width: 45% !important; flex: 1 1 45% !important; }
+}
+
+@media (max-width: 768px) {
+  #vrModal .modal-content { padding: 15px !important; }
+  #vrModal .modal-content > div:first-child { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+  #vrModal select[style*="min-width: 250px"], #vrModal select[style*="min-width:250px"] { min-width: 100% !important; width: 100% !important; }
+  #vrModal input[style*="width: 50px"], #vrModal input[style*="width: 100px"],
+  #vrModal input[style*="width: 150px"], #vrModal input[style*="width: 80px"],
+  #vrModal input[style*="width:50px"], #vrModal input[style*="width:100px"],
+  #vrModal input[style*="width:150px"], #vrModal input[style*="width:80px"] { width: 100% !important; min-width: 60px !important; }
+  #vrModal div[style*="overflow"] { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
+
+  #poExportModal .modal-content { padding: 15px !important; }
+  #poExportModal span[style*="width: 120px"], #poExportModal span[style*="width:120px"] { width: auto !important; min-width: 80px !important; }
+  #poExportModal .modal-content > div:nth-child(2) > div:first-child { flex-wrap: wrap !important; gap: 8px !important; }
+  #poExportModal .modal-content > div:last-child { flex-direction: column-reverse !important; gap: 10px !important; }
+  #poExportModal .modal-content > div:last-child .btn { width: 100% !important; margin: 0 !important; }
+
+  #deliverySlipModal .modal-content { padding: 15px !important; }
+  #deliverySlipModal .modal-content > div[style*="display: grid"][style*="1fr 1fr"],
+  #deliverySlipModal .modal-content div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; gap: 15px !important; }
+  #deliverySlipModal div[style*="grid-template-columns: 120px"] { grid-template-columns: 100px 1fr !important; }
+  #deliverySlipModal input[style*="width: 100px"] { width: 80px !important; }
+  #deliverySlipModal div[style*="width: calc(50%"] { width: 100% !important; }
+  #deliverySlipModal label[style*="height: 70px"], #deliverySlipModal div[style*="height: 70px"] { height: 55px !important; }
+  #deliverySlipModal div[style*="justify-content: space-between"] { flex-wrap: wrap !important; gap: 10px !important; }
+  #btn_saveDeliverySlip { width: 100% !important; padding: 10px 16px !important; }
+
+  #profileModal .modal-content div[style*="display: flex"][style*="gap: 10px"] { flex-wrap: wrap !important; }
+  #profileModal .modal-content div[style*="display: flex"][style*="gap: 10px"] > .form-group,
+  #profileModal .modal-content div[style*="display: flex"][style*="gap: 10px"] > div { min-width: 100% !important; flex: 1 1 100% !important; }
+
+  #trackingModal .modal-content { height: 90vh !important; padding: 0 !important; }
+  #trackingModal div[style*="justify-content: space-between"] { flex-wrap: wrap !important; gap: 8px !important; }
+
+  #poImageModal .modal-content { padding: 15px !important; }
+  #poImageModal select[style*="min-width: 250px"], #poImageModal select[style*="min-width:250px"] { min-width: 100% !important; width: 100% !important; }
+  #poImageModal .modal-content > div:first-child { flex-wrap: wrap !important; gap: 10px !important; }
+  #poImageModal .modal-content > div:last-child { flex-direction: column-reverse !important; gap: 10px !important; }
+  #poImageModal .modal-content > div:last-child .btn { width: 100% !important; margin: 0 !important; }
+
+  #statusDetailModal .modal-content > div:nth-child(2) { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
+  #statusDetailModal .modal-content table { min-width: 600px !important; }
+  #statusDetailModal .modal-content > div:last-child { flex-direction: column-reverse !important; gap: 10px !important; }
+  #statusDetailModal .modal-content > div:last-child button { width: 100% !important; margin: 0 !important; }
+
+  #shipItemModal .modal-content > div:first-child, #shipItemModal .modal-content > div:last-child { flex-wrap: wrap !important; gap: 10px !important; }
+
+  #transitConfigModal .modal-content div[style*="display:flex"][style*="gap:10px"],
+  #transitConfigModal .modal-content div[style*="display: flex"][style*="gap: 10px"] { flex-wrap: wrap !important; }
+
+  #splitModal .modal-content div[style*="display:flex"], #splitModal .modal-content div[style*="display: flex"] { flex-wrap: wrap !important; }
+
+  #addProdModal .modal-content div[style*="display:flex"][style*="gap:10px"],
+  #addProdModal .modal-content div[style*="display: flex"][style*="gap: 10px"] { flex-wrap: wrap !important; }
+  #addProdModal .modal-content div[style*="display:flex"][style*="gap:10px"] > .form-group,
+  #addProdModal .modal-content div[style*="display: flex"][style*="gap: 10px"] > .form-group { min-width: 100% !important; flex: 1 1 100% !important; }
+
+  #catStatusModalBody > div[style*="display: grid"] { grid-template-columns: 1fr !important; gap: 20px !important; padding: 15px !important; height: auto !important; }
+  #catStatusModalBody > div[style*="display: grid"] > div { max-height: 400px !important; }
+
+  #page4 > .container > div:first-child > div:nth-child(2) > div:first-child > div:last-child { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; width: 100% !important; }
+  #page4 > .container > div:first-child > div:nth-child(2) > div:first-child > div:last-child > .btn { flex: 1 1 calc(50% - 4px) !important; justify-content: center !important; padding: 10px 8px !important; font-size: 11px !important; }
+}
+
+@media (max-width: 480px) {
+  #billsGridContainer { grid-template-columns: repeat(2, 1fr) !important; gap: 6px !important; }
+  .btn, #sysAlertButtons .btn { padding: 6px 10px !important; font-size: 11px !important; }
+  .header-action > div:last-child .btn { flex: 1 1 100% !important; min-width: 100% !important; }
+  .nav-logo { font-size: 16px !important; }
+  .nav-tab { font-size: 11px !important; padding: 4px 6px !important; }
+  .modal-content { padding: 12px !important; }
+  #detailModal .modal-content div[style*="display:flex"][style*="gap:10px"] > div,
+  #detailModal .modal-content div[style*="display: flex"][style*="gap: 10px"] > div { min-width: 100% !important; flex: 1 1 100% !important; }
+  #calcCostModal .modal-content div[style*="display:flex"][style*="gap:10px"] > .form-group,
+  #calcCostModal .modal-content div[style*="display: flex"][style*="gap: 10px"] > .form-group { min-width: 100% !important; flex: 1 1 100% !important; }
+  #page4 > .container > div:first-child > div:nth-child(2) > div:first-child > div:last-child > .btn { flex: 1 1 100% !important; font-size: 12px !important; }
+  #page3 .apple-card > div:first-child > div:last-child > button,
+  #page3 .apple-card > div:first-child > div:last-child > div { width: 100% !important; }
+  #page3 .apple-card > div:first-child > div:last-child > div > button { width: 100% !important; }
+}
+
+/* =========================================
+     🌟 Credit Card Calculator Styles
+     ========================================= */
+  .cc-main-tab {
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #8e8e93;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: 0.2s;
+  }
+  .cc-main-tab.active {
+    color: var(--apple-accent);
+    border-bottom-color: var(--apple-accent);
+  }
+  
+  .cc-rate-toggle {
+    flex: 1;
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  .cc-rate-toggle input { display: none; }
+  .cc-rate-slider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #8e8e93;
+    background: transparent;
+    border-radius: 6px;
+    transition: 0.2s;
+  }
+  .cc-rate-toggle input:checked + .cc-rate-slider {
+    background: #fff;
+    color: #1d1d1f;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  .cc-item-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    border: 2px solid #e5e5ea;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    transition: 0.3s ease;
+  }
+  .cc-item-card.matched {
+    border-color: #34c759;
+    box-shadow: 0 4px 15px rgba(52, 199, 89, 0.15);
+  }
+  
+  .cc-upload-box {
+    border: 1px dashed #d2d2d7;
+    border-radius: 8px;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fafafc;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 11px;
+    color: #007aff;
+    position: relative;
+    overflow: hidden;
+  }
+  .cc-upload-box:hover { background: #f2f8ff; border-color: #007aff; }
+  .cc-upload-box img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; }
+  
+  .cc-ocr-loader {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(255,255,255,0.9); display: flex; flex-direction: column; 
+    align-items: center; justify-content: center; z-index: 10; font-size: 10px; color: #1d1d1f; font-weight: bold;
+  }
+
+  /* =========================================
+     📱 Responsive: Modal คำนวณบัตรเครดิต (สำหรับมือถือ)
+     ========================================= */
+  @media (max-width: 768px) {
+    /* ขยายหน้าต่างให้เต็มจอ และเปลี่ยนเป็นทรง Bottom Sheet */
+    #ccCalcModal .modal-content {
+      width: 100% !important;
+      height: 92vh !important;
+      max-height: 92vh !important;
+      border-radius: 20px 20px 0 0 !important;
+      margin-top: auto; /* ดันให้ติดขอบล่าง */
+    }
+
+    /* เปลี่ยนการเรียงจาก ซ้าย-ขวา เป็น บน-ล่าง และรวม Scroll เป็นอันเดียว */
+    #ccTab_MyToys, #ccTab_Page365 {
+      display: block !important;
+      overflow-y: auto !important;
+      padding: 15px !important;
+    }
+
+    /* กล่อง 1: ฟอร์มคำนวณ (ให้กว้างเต็มจอ และปลดล็อคความสูง) */
+    #ccTab_MyToys > div:first-child,
+    #ccTab_Page365 > div:first-child {
+      width: 100% !important;
+      margin-bottom: 20px !important;
+      max-height: none !important;
+      overflow: visible !important;
+    }
+
+    /* กล่อง 2: ลิสต์รายการ/ประวัติ (กว้างเต็มจอ) */
+    #ccTab_MyToys > div:last-child,
+    #ccTab_Page365 > div:last-child {
+      width: 100% !important;
+      overflow: visible !important;
+    }
+
+    /* ปลดล็อค Scroll ซ้อน Scroll ด้านในตาราง */
+    #ccMtListContainer, #ccP3HistoryContainer {
+      overflow: visible !important;
+      height: auto !important;
+      max-height: none !important;
+      padding: 15px 0 !important; /* ลดขอบซ้ายขวาออก */
+      background: transparent !important;
+    }
+
+    /* ในการ์ดตรวจสอบ (MyToys) ปรับช่องอัปโหลด QR กับ สลิป ให้เรียง บน-ล่าง */
+    .cc-item-card > div:last-child {
+      grid-template-columns: 1fr !important;
+      gap: 15px !important;
+    }
+  }
+
+  /* =========================================
+     🌟 ปรับ Layout สำหรับหน้ารายการคำนวณ MyToys
+     ========================================= */
+  #ccMtListContainer {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+
+  /* =========================================
+     🌟 สีสันของ Tab ระบบคำนวณบัตรเครดิต
+     ========================================= */
+  .cc-main-tab-btn {
+    background-color: #f2f2f7; /* สีพื้นตอนไม่ได้เลือก */
+    color: #8e8e93;            /* สีอักษรตอนไม่ได้เลือก */
+  }
+  
+  .cc-main-tab-btn:hover {
+    background-color: #e5e5ea;
+  }
+
+  /* สีเมื่อปุ่ม MyToys ถูกเลือก (ชมพู) - ไม่มีเงา */
+  #ccTabBtn_MyToys.active {
+    background-color: #e76caa;
+    color: #ffffff;
+    box-shadow: none; /* เอาเงาออก */
+  }
+
+  /* สีเมื่อปุ่ม Page365 ถูกเลือก (เขียว) - ไม่มีเงา */
+  #ccTabBtn_Page365.active {
+    background-color: #08c1a8;
+    color: #ffffff;
+    box-shadow: none; /* เอาเงาออก */
+  }
+
+  /* 🌟 จัดรูปทรงปุ่ม Icon วงกลมบน Navbar */
+  .icon-btn {
+    padding: 8px !important;
+    border-radius: 50% !important;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* =========================================
+     🌟 Navbar Dropdown (Apple Style)
+     ========================================= */
+  .dropdown-item {
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #f0f0f2;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    color: #1d1d1f;
+    font-weight: 500;
+    font-size: 13.5px;
+    transition: background 0.2s, color 0.2s;
+    font-family: 'Anuphan', sans-serif;
+  }
+  .dropdown-item:last-child {
+    border-bottom: none;
+  }
+  /* 🌟 สีเวลาเอาเมาส์ชี้ที่รายการย่อยใน Dropdown */
+  .dropdown-item:hover {
+    background: #e0f0ff; /* พื้นหลังสีฟ้าอ่อน */
+    color: #007aff;      /* ตัวอักษรสีฟ้า */
+  }
+
+  /* 🌟 สีเวลาเอาเมาส์ชี้ที่ปุ่ม "พรีออเดอร์" บนแถบเมนูหลัก */
+  #navPreorderBtn:hover {
+    color: #007aff !important;
+  }
+  .dropdown-item.active {
+    color: #007aff;
+    font-weight: 700;
+    background: #e0f0ff;
+  }
+
+  /* 🌟 แก้ไขบน Mobile ป้องกัน Dropdown โดนตัดขอบ */
+  @media (max-width: 992px) {
+    .navbar > div:nth-child(2) {
+        overflow: visible !important; /* ปลดล็อคไม่ให้เมนูโดนตัดขาด */
+        overflow-x: visible !important;
+        flex-wrap: wrap !important;
+    }
+  }
+
+  /* 🌟 สีเวลาเอาเมาส์ชี้ที่ปุ่ม "พรีออเดอร์", "พรีออเดอร์ กทม" และ "พร้อมส่ง" */
+  #navPreorderBtn:hover, #navPreorderBkkBtn:hover, #navReadyBtn:hover {
+    color: #007aff !important;
+  }
+
+  /* =========================================
+   🌟 ปรับขนาดกล่องเลือก PO (หน้าจัดส่ง) ให้กว้างพอดีตัวอักษร 
+   ========================================= */
+#ship_poBoxContainer {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+}
+
+.ship-po-box {
+    min-width: unset !important;
+    width: fit-content !important;
+    flex: 0 0 auto !important;
+    padding: 10px 18px !important; /* เพิ่มระยะขอบซ้ายขวาให้ดูสบายตาขึ้น */
+}
